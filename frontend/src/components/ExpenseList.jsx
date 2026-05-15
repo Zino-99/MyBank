@@ -1,4 +1,4 @@
-import React from "react";
+
 
 export default function ExpenseList({ expenses }) {
   if (!expenses || expenses.length === 0) {
