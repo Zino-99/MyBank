@@ -1,0 +1,45 @@
+name: CI MyBank
+
+on:
+  push:
+    branches: [main, develop]
+
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : récupérer le code
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      # Étape 2 : installer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      # Étape 3 : installer les dépendances
+      - name: Installation dépendances frontend
+        run: npm ci
+        working-directory: frontend
+
+      # Étape 4 : build React/Vite
+      - name: Build React
+        run: npm run build
+        working-directory: frontend
+
+      # Étape 5 : lint ESLint
+      - name: Lint ESLint
+        run: npm run lint
+        working-directory: frontend
+
+      # Étape 6 : tests Vitest
+      - name: Tests Vitest
+        run: npm run test -- --reporter=verbose
+        working-directory: frontend

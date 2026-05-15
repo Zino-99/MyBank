@@ -8,3 +8,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+# Ajoutez ces lignes à la fin du .gitignore existant
+
