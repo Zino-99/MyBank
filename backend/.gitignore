@@ -11,3 +11,8 @@
 
 # Ajoutez ces lignes à la fin du .gitignore existant
 
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
