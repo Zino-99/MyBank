@@ -50,9 +50,7 @@ jobs:
       db:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: mybank        # Symfony ajoute _test → mybank_test
-          MYSQL_USER: mybank
-          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: mybank_test
           MYSQL_ROOT_PASSWORD: rootsecret
         ports: ['3306:3306']
         options: >-
@@ -62,7 +60,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -77,10 +75,10 @@ jobs:
         run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank'  # Sans suffixe !
+          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'
 
       - name: Tests PHPUnit
         run: php bin/phpunit
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank'  # Sans suffixe !
+          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'!
