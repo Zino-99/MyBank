@@ -37,8 +37,8 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ghcr.io/${{ steps.meta.outputs.repo }}/mybank-backend:latest
-            ghcr.io/${{ steps.meta.outputs.repo }}/mybank-backend:${{ steps.meta.outputs.sha }}
+            ghcr.io/${{ steps.meta.outputs.repo }}/mybank/mybank-backend:latest
+            ghcr.io/${{ steps.meta.outputs.repo }}/mybank/mybank-backend:${{ steps.meta.outputs.sha }}
 
       - name: Build & push frontend
         uses: docker/build-push-action@v5
