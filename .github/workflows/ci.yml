@@ -71,7 +71,7 @@ jobs:
         working-directory: backend
       - name: Creer la base de test + migrations
         run: |
-          php bin/console doctrine:database:create --env=test --if-not-exists
+          mysql -h 127.0.0.1 -u root -prootsecret -e "CREATE DATABASE IF NOT EXISTS mybank_test; GRANT ALL PRIVILEGES ON mybank_test.* TO 'mybank'@'%'; FLUSH PRIVILEGES;"
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
         working-directory: backend
         env:
