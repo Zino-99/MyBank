@@ -51,6 +51,8 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_DATABASE: mybank_test
+          MYSQL_USER: mybank
+          MYSQL_PASSWORD: secret
           MYSQL_ROOT_PASSWORD: rootsecret
         ports: ['3306:3306']
         options: >-
@@ -71,14 +73,22 @@ jobs:
         run: composer install --no-interaction
         working-directory: backend
 
+      - name: Creer utilisateur avec privileges
+        run: |
+          mysql -h 127.0.0.1 -u root -prootsecret -e "
+            CREATE USER IF NOT EXISTS 'mybank'@'%' IDENTIFIED BY 'secret';
+            GRANT ALL PRIVILEGES ON mybank_test.* TO 'mybank'@'%';
+            FLUSH PRIVILEGES;
+          "
+
       - name: Migrations
         run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'
+          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank_test'
 
       - name: Tests PHPUnit
         run: php bin/phpunit
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'
+          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank_test'
