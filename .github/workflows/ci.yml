@@ -81,4 +81,4 @@ jobs:
         run: php bin/phpunit
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'!
+          DATABASE_URL: 'mysql://root:rootsecret@127.0.0.1:3306/mybank_test'
