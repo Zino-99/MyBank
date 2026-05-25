@@ -90,3 +90,19 @@ jobs:
         working-directory: backend
         env:
           DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank_test'
+
+  backend-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo, pdo_mysql
+      - name: Installation dépendances Composer
+        run: composer install --no-interaction
+        working-directory: backend
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyse --error-format=github
+        working-directory: backend
