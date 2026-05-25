@@ -50,7 +50,7 @@ jobs:
       db:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: mybank_test
+          MYSQL_DATABASE: mybank        # Symfony ajoute _test → mybank_test
           MYSQL_USER: mybank
           MYSQL_PASSWORD: secret
           MYSQL_ROOT_PASSWORD: rootsecret
@@ -59,25 +59,28 @@ jobs:
           --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-retries=5
+
     steps:
       - uses: actions/checkout@v4
+      
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: pdo, pdo_mysql
+
       - name: Installation dependances Composer
         run: composer install --no-interaction
         working-directory: backend
-      - name: Creer la base de test + migrations
-        run: |
-          mysql -h 127.0.0.1 -u root -prootsecret -e "CREATE DATABASE IF NOT EXISTS mybank; GRANT ALL PRIVILEGES ON mybank_test.* TO 'mybank'@'%'; FLUSH PRIVILEGES;"
-          php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      - name: Migrations
+        run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank_test'
+          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank'  # Sans suffixe !
+
       - name: Tests PHPUnit
         run: php bin/phpunit
         working-directory: backend
         env:
-          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank_test'
+          DATABASE_URL: 'mysql://mybank:secret@127.0.0.1:3306/mybank'  # Sans suffixe !
