@@ -26,7 +26,7 @@ const Login = () => {
       }
 
       navigate("/home");
-    } catch (err) {
+    } catch {
       setError("Erreur de connexion au serveur.");
     }
   };
