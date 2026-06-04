@@ -1,16 +1,13 @@
-
+import { Routes, Route } from 'react-router-dom'  // ← plus de BrowserRouter ici
 import Login from './pages/Login.jsx'
+import Home from './pages/Home.jsx'
 
-
-function App() {
-
-
+export default function App() {
   return (
-    <>
-      <Login />
-    
-    </>
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   )
 }
-
-export default App
