@@ -20,6 +20,9 @@ class Operation
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $amount = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
+
     #[ORM\ManyToOne(inversedBy: 'operations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
@@ -78,6 +81,17 @@ class Operation
     {
         $this->user = $user;
 
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
         return $this;
     }
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import OperationModal from "./OperationModal";
 
-export default function OperationsHeader() {
+export default function OperationsHeader({ onOperationCreated }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -23,7 +23,15 @@ export default function OperationsHeader() {
         </button>
       </div>
 
-      {showModal && <OperationModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <OperationModal
+          onClose={() => setShowModal(false)}
+          onCreated={(newOp) => {
+            onOperationCreated?.(newOp);
+            ;
+          }}
+        />
+      )}
     </>
   );
 }

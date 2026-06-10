@@ -13,6 +13,11 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            json_login:                          # ← ajouter ça
+                check_path: /api/login
+                username_path: email
+                password_path: password
+            stateless: false                     # ← session-based (pas JWT)
 
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
