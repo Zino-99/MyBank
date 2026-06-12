@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 
 const CATEGORIES = ["Food", "Transport", "Health", "Housing", "Entertainment", "Salary", "Tech", "Other"];
@@ -9,26 +9,14 @@ export default function OperationModal({ onClose, onCreated, onUpdated, operatio
   const isEdit = operation !== null;
 
   const [form, setForm] = useState({
-    label:    "",
-    amount:   "",
-    date:     new Date().toISOString().split("T")[0],
-    category: "Food",
+    label:    operation?.label    ?? "",
+    amount:   operation?.amount   ?? "",
+    date:     operation?.date     ?? new Date().toISOString().split("T")[0],
+    category: operation?.category ?? "Food",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
   const [success, setSuccess] = useState(false);
-
-  // Pré-remplir le form quand operation est fourni
-  useEffect(() => {
-    if (operation) {
-      setForm({
-        label:    operation.label,
-        amount:   operation.amount,
-        date:     operation.date,
-        category: operation.category,
-      });
-    }
-  }, [operation]);
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
