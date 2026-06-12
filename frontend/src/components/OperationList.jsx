@@ -80,7 +80,7 @@ export default function OperationList({ operations, setOperations }) {
       .then((data) => setOperations(data))
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [setOperations]);
 
   const handleEdit = (op) => setEditingOp(op);
 
