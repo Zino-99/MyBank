@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Operation;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,6 +26,8 @@ final class OperationController extends AbstractController
         }
 
         $user = $this->getUser();
+        assert($user instanceof User);
+
         $categoryTitle = $data['category'] ?? 'Other';
 
         $category = $em->getRepository(Category::class)->findOneBy([
@@ -66,7 +69,7 @@ final class OperationController extends AbstractController
         $operations = $em->getRepository(Operation::class)->findBy(
             ['user' => $user],
             ['date' => 'DESC']
-    );
+        );
 
         return $this->json(array_map(fn($op) => [
             'id'       => $op->getId(),
@@ -80,10 +83,9 @@ final class OperationController extends AbstractController
     #[Route('/operations/{id}', name: 'api_operations_delete', methods: ['DELETE'])]
     public function delete(Operation $operation, EntityManagerInterface $em): JsonResponse
     {
-        // Vérifie que l'opération appartient bien à l'utilisateur connecté
         if ($operation->getUser() !== $this->getUser()) {
             return $this->json(['error' => 'Forbidden'], 403);
-    }
+        }
 
         $em->remove($operation);
         $em->flush();
@@ -94,23 +96,27 @@ final class OperationController extends AbstractController
     #[Route('/operations/{id}', name: 'api_operations_update', methods: ['PUT'])]
     public function update(Operation $operation, Request $request, EntityManagerInterface $em): JsonResponse
     {
-        if ($operation->getUser() !== $this->getUser()) {
+        $currentUser = $this->getUser();
+        assert($currentUser instanceof User);
+
+        if ($operation->getUser() !== $currentUser) {
             return $this->json(['error' => 'Forbidden'], 403);
-    }
+        }
 
         $data = json_decode($request->getContent(), true);
         $categoryTitle = $data['category'] ?? 'Other';
 
         $category = $em->getRepository(Category::class)->findOneBy([
             'title' => $categoryTitle,
-            'user'  => $this->getUser(),
-    ]);
+            'user'  => $currentUser,
+        ]);
+
         if (!$category) {
             $category = new Category();
             $category->setTitle($categoryTitle);
-            $category->setUser($this->getUser());
+            $category->setUser($currentUser);
             $em->persist($category);
-    }
+        }
 
         $operation->setLabel($data['label']);
         $operation->setAmount((string) $data['amount']);
@@ -124,6 +130,6 @@ final class OperationController extends AbstractController
             'amount'   => $operation->getAmount(),
             'category' => $category->getTitle(),
             'date'     => $operation->getDate()->format('Y-m-d'),
-    ]);
+        ]);
     }
 }
